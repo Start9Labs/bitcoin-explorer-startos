@@ -17,9 +17,7 @@ export const manifest = setupManifest({
   images: {
     'explorer': {
       source: {
-        dockerBuild: {
-          workdir: 'explorer',
-        }
+        dockerBuild: {}
       },
     },
   },
