@@ -3,13 +3,9 @@ import { setDependencies } from './dependencies'
 import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
-import { yamlFile } from './file-models/config.yml'
 
 // **** PreInstall ****
 const preInstall = sdk.setupPreInstall(async ({ effects }) => {
-  const name = 'World'
-
-  await yamlFile.write(effects, { name })
 })
 
 // **** PostInstall ****
