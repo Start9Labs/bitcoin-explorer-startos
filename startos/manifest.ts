@@ -1,8 +1,8 @@
 import { setupManifest } from '@start9labs/start-sdk'
 
 export const manifest = setupManifest({
-  id: 'hello-world',
-  title: 'Hello World',
+  id: 'btc-rpc-explorer',
+  title: 'BTC Explorer',
   license: 'mit',
   wrapperRepo: 'https://github.com/Start9Labs/hello-world-wrapper',
   upstreamRepo: 'https://github.com/Start9Labs/hello-world',
@@ -30,5 +30,11 @@ export const manifest = setupManifest({
     start: null,
     stop: null,
   },
-  dependencies: {},
+  dependencies: {
+    bitcoind: {
+      description: "Communicate with the Bitcoin Network",
+      optional: false,
+      s9pk: "https://github.com/Start9Labs/bitcoind-startos/releases/download/v28.1.0.0-alpha.6/bitcoind.s9pk",
+    },
+  },
 })
