@@ -1,48 +1,60 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
 import { uiPort } from './utils'
+import { manifest as btcManifest } from "bitcoind-startos/startos/manifest"
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
-  /**
-   * ======================== Setup (optional) ========================
-   *
-   * In this section, we fetch any resources or run any desired preliminary commands.
-   */
-  console.info('Starting Hello World!')
+  console.info('Starting BTC RPC Explorer')
 
-  /**
-   * ======================== Additional Health Checks (optional) ========================
-   *
-   * In this section, we define *additional* health checks beyond those included with each daemon (below).
-   */
   const additionalChecks: T.HealthCheck[] = []
 
-  /**
-   * ======================== Daemons ========================
-   *
-   * In this section, we create one or more daemons that define the service runtime.
-   *
-   * Each daemon defines its own health check, which can optionally be exposed to the user.
-   */
-  return sdk.Daemons.of(effects, started, additionalChecks).addDaemon(
-    'primary',
-    {
-      subcontainer: await sdk.SubContainer.of(
-        effects,
-        { imageId: 'hello-world' },
-        sdk.Mounts.of().addVolume('main', null, '/data', false),
-        'hello-world-sub',
-      ),
-      command: ['hello-world'],
-      ready: {
-        display: 'Web Interface',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, uiPort, {
-            successMessage: 'The web interface is ready',
-            errorMessage: 'The web interface is not ready',
-          }),
-      },
-      requires: [],
-    },
+  const workdir = '/workspace'
+
+  const explorer = await sdk.SubContainer.of(
+    effects,
+    { imageId: 'explorer' },
+    sdk.Mounts.of()
+      .mountVolume({
+        volumeId: 'main',
+        mountpoint: '/data',
+        subpath: null,
+        readonly: false,
+      }).mountDependency<
+        typeof btcManifest
+      >({
+        dependencyId: "bitcoind",
+        volumeId: "main",
+        subpath: null,
+        // subpath: ".cookie",
+        // type: 'file',
+        mountpoint: `/btcd/`,
+        readonly: true
+      })
+    ,
+    'explorer',
   )
+
+  return sdk.Daemons.of(effects,
+    started, additionalChecks
+  ).addDaemon('primary', {
+    subcontainer: explorer,
+    command: ['npm', 'start'],
+    cwd: workdir,
+    env: {
+      BTCEXP_BITCOIND_HOST: 'bitcoind.startos',
+      BTCEXP_BITCOIND_PORT: '8332',
+      BTCEXP_BITCOIND_COOKIE: '/btcd/.cookie',
+      BTCEXP_HOST: '0.0.0.0',
+      BTCEXP_PORT: `${uiPort}`,
+    },
+    ready: {
+      display: 'Web Interface',
+      fn: () => sdk.healthCheck.checkPortListening(effects, uiPort, {
+        successMessage: 'The web interface is ready',
+        errorMessage: '',
+      }),
+    },
+    requires: [],
+  })
+
 })

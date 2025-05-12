@@ -15,9 +15,11 @@ export const manifest = setupManifest({
   },
   volumes: ['main'],
   images: {
-    'hello-world': {
+    'explorer': {
       source: {
-        dockerTag: 'start9/hello-world',
+        dockerBuild: {
+          workdir: 'explorer',
+        }
       },
     },
   },
