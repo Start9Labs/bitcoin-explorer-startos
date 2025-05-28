@@ -28,7 +28,8 @@ export const inputSpec = InputSpec.of({
   redis: Value.toggle({
     name: 'Enable key-value store for tx caching',
     description: null,
-    default: false,
+    default: true,
+    immutable: true,
   }),
 })
 
