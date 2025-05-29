@@ -1,6 +1,6 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
-import { uiPort } from './utils'
+import { redisUrl, uiPort } from './utils'
 import { envFile } from './fileModels/_env'
 import { CommandType } from '@start9labs/start-sdk/base/lib/types'
 
@@ -48,7 +48,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     },
   }
 
-  if (env && env.BTCEXP_REDIS_URL) {
+  if (env?.BTCEXP_REDIS_URL == redisUrl) {
     const valkey = await sdk.SubContainer.of(effects,
       { imageId: "valkey" },
       sdk.Mounts.of(),

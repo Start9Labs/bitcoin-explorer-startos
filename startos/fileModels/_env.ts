@@ -27,16 +27,26 @@ const shape = object({
     literal(BTCEXP_PORT).onMismatch(BTCEXP_PORT),
 
   // (default value is true, i.e.resource - intensive features are disabled)
-  BTCEXP_SLOW_DEVICE_MODE: oneOf(literal('true'), literal('false')).optional(),
+  BTCEXP_SLOW_DEVICE_MODE:
+    oneOf(literal('true'), literal('false'))
+      .onMismatch('true')
+      .optional(),
   // Default: false
   BTCEXP_PRIVACY_MODE:
-    oneOf(literal('true'), literal('false')).optional(),
+    oneOf(literal('true'), literal('false'))
+      .onMismatch('false')
+      .optional(),
   // Default: true(i.e.no exchange - rate queries made)
   BTCEXP_NO_RATES:
-    oneOf(literal('true'), literal('false')).optional(),
+    oneOf(literal('true'), literal('false'))
+      .onMismatch('true')
+      .optional(),
 
   BTCEXP_REDIS_URL:
-    literal(redisUrl).optional().onMismatch(redisUrl)
+    oneOf(literal(redisUrl), literal(''))
+      .optional()
+      .onMismatch(redisUrl)
+
   // BTCEXP_BITCOIND_RPC_TIMEOUT=5000
 })
 

@@ -29,7 +29,7 @@ export const inputSpec = InputSpec.of({
     name: 'Enable key-value store for tx caching',
     description: null,
     default: true,
-    immutable: true,
+    immutable: false,
   }),
 })
 
@@ -59,7 +59,7 @@ export const configure = sdk.Action.withInput(
       BTCEXP_NO_RATES:
         boolToString(!input.rates),
       BTCEXP_REDIS_URL:
-        input.redis ? redisUrl : undefined
+        input.redis ? redisUrl : ''
     }
 
     await Promise.all([
