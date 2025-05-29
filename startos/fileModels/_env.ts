@@ -51,6 +51,9 @@ const shape = object({
 })
 
 export const envFile = FileHelper.env(
-  "/media/startos/volumes/main/.env",
-  shape
+  {
+    volumeId: "main",
+    subpath: ".env"
+  },
+  shape,
 )
