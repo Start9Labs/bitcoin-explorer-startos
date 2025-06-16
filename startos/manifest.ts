@@ -4,14 +4,14 @@ export const manifest = setupManifest({
   id: 'btc-rpc-explorer',
   title: 'BTC Explorer',
   license: 'mit',
-  wrapperRepo: 'https://github.com/Start9Labs/hello-world-wrapper',
-  upstreamRepo: 'https://github.com/Start9Labs/hello-world',
-  supportSite: 'https://docs.start9.com/',
-  marketingSite: 'https://start9.com/',
-  donationUrl: 'https://donate.start9.com/',
+  wrapperRepo: 'https://github.com/aldum/btc-rpc-explorer-startos',
+  upstreamRepo: 'https://github.com/janoside/btc-rpc-explorer',
+  supportSite: 'https://github.com/janoside/btc-rpc-explorer/issues',
+  marketingSite: 'https://bitcoinexplorer.org/',
+  donationUrl: null,
   description: {
-    short: 'Bare bones example of a StartOS service',
-    long: 'Hello World is a template service that provides examples of basic StartOS features.',
+    short: 'Self-Hosted Bitcoin explorer for everyone',
+    long: 'Self-Hosted Bitcoin explorer for everyone',
   },
   volumes: ['main'],
   images: {
@@ -28,7 +28,7 @@ export const manifest = setupManifest({
   },
   hardwareRequirements: {},
   alerts: {
-    install: 'Optional alert to display before installing the service',
+    install: null,
     update: null,
     uninstall: null,
     restore: null,
@@ -39,7 +39,8 @@ export const manifest = setupManifest({
     bitcoind: {
       description: "Communicate with the Bitcoin Network",
       optional: false,
-      s9pk: "https://github.com/Start9Labs/bitcoind-startos/releases/download/v28.1.0.3-alpha.0/bitcoind.s9pk",
+      s9pk:
+        "https://github.com/Start9Labs/bitcoind-startos/releases/download/v28.1.0.3-alpha.3/bitcoind.s9pk",
     },
   },
 })
