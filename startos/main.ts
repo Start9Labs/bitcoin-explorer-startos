@@ -1,13 +1,10 @@
 import { sdk } from './sdk'
-import { T } from '@start9labs/start-sdk'
 import { redisUrl, uiPort } from './utils'
 import { envFile } from './fileModels/_env'
-import { CommandType } from '@start9labs/start-sdk/base/lib/types'
+import { ExecCommandOptions } from '@start9labs/start-sdk/package/lib/mainFn/Daemons'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   console.info('Starting BTC RPC Explorer')
-
-  const additionalChecks: T.HealthCheck[] = []
 
   const workdir = '/workspace'
 
@@ -37,7 +34,9 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   const primaryDaemonOptions = {
     subcontainer: explorer,
-    command: ['npm', 'start'] as CommandType,
+    exec: {
+      command: ['npm', 'start']
+    } as ExecCommandOptions,
     cwd: workdir,
     ready: {
       display: 'Web Interface',
@@ -55,11 +54,10 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       "valkey",
     )
 
-    return sdk.Daemons.of(effects,
-      started, additionalChecks
+    return sdk.Daemons.of(effects, started
     ).addDaemon('valkey', {
       subcontainer: valkey,
-      command: 'valkey-server',
+      exec: { command: 'valkey-server' },
       ready: {
         display: null,
         fn: () =>
@@ -75,7 +73,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
   } else {
     return sdk.Daemons.of(effects,
-      started, additionalChecks
+      started
     ).addDaemon('primary', {
       ...primaryDaemonOptions,
       requires: [],
