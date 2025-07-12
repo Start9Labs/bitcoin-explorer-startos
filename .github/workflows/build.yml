@@ -11,7 +11,7 @@ jobs:
   BuildPackage:
     runs-on: ubuntu-latest
     outputs:
-      package_id:    ${{ steps.save-out.outputs.package_id }}
+      package_id: ${{ steps.save-out.outputs.package_id }}
       package_title: ${{ steps.save-out.outputs.package_title }}
     steps:
       - name: Prepare StartOS SDK
@@ -61,16 +61,19 @@ jobs:
         run: |
           echo "package_id=${{ needs.BuildPackage.outputs.package_id }}"       >> $GITHUB_ENV
           echo "package_title=${{ needs.BuildPackage.outputs.package_title }}" >> $GITHUB_ENV
+          export DEBIAN_FRONTEND=noninteractive
+          apt update && apt install -y xxhash
 
       - uses: actions/download-artifact@v4
         with:
           name: ${{ env.package_id }}.s9pk
           path: ./
 
-      - name: Generate sha256 checksum
+      - name: Generate checksums
         run: |
           PACKAGE_ID=${{ env.package_id }}
           sha256sum ${PACKAGE_ID}.s9pk > ${PACKAGE_ID}.s9pk.sha256
+          xxhsum ${PACKAGE_ID}.s9pk > ${PACKAGE_ID}.s9pk.xxhash
         shell: bash
 
       - name: Create GitHub Release
@@ -82,3 +85,4 @@ jobs:
           files: |
             ./${{ env.package_id }}.s9pk
             ./${{ env.package_id }}.s9pk.sha256
+            ./${{ env.package_id }}.s9pk.xxhash
