@@ -35,7 +35,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const primaryDaemonOptions = {
     subcontainer: explorer,
     exec: {
-      command: ['npm', 'start']
+      command: ['npm', 'start'],
     } as ExecCommandOptions,
     cwd: workdir,
     ready: {
