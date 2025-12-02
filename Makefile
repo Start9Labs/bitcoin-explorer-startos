@@ -1,4 +1,4 @@
-PACKAGE_ID := $(shell sed -n -r -e "s/\s*id\s*:\s*['\"](.+)['\"],/\1/ p" startos/manifest.ts)
+PACKAGE_ID := $(shell awk -F"'" '/id:/ {print $$2}' startos/manifest.ts)
 INGREDIENTS := $(shell start-cli s9pk list-ingredients 2> /dev/null)
 
 CMD_ARCH_GOAL := $(filter arm arm64 aarch64 x86 x64 x86_64, $(MAKECMDGOALS))
