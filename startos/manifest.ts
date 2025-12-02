@@ -15,7 +15,7 @@ const architectures = (() => {
 
 export const manifest = setupManifest({
   id: 'btc-rpc-explorer',
-  title: 'BTC Explorer',
+  title: 'Bitcoin Explorer',
   license: 'mit',
   wrapperRepo: 'https://github.com/aldum/btc-rpc-explorer-startos',
   upstreamRepo: 'https://github.com/janoside/btc-rpc-explorer',
