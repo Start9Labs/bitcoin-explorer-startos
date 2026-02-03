@@ -1,4 +1,5 @@
 import { sdk } from '../sdk'
+import { i18n } from '../i18n'
 import { store } from '../fileModels/store.json'
 import { envFile } from '../fileModels/_env'
 import { boolToString, redisUrl } from '../utils'
@@ -7,25 +8,26 @@ const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
   intensive: Value.toggle({
-    name: 'Resource intensive features',
-    description:
+    name: i18n('Resource intensive features'),
+    description: i18n(
       'Enable resource-intensive features, including: UTXO set summary querying',
+    ),
     default: false,
   }),
   privacy: Value.toggle({
-    name: 'Privacy mode',
-    description:
+    name: i18n('Privacy mode'),
+    description: i18n(
       'Disable: Exchange-rate queries, IP-geolocation queries',
+    ),
     default: false,
   }),
   rates: Value.toggle({
-    name: 'Exchange rates',
-    description:
-      'Enable exchange-rate queries',
+    name: i18n('Exchange rates'),
+    description: i18n('Enable exchange-rate queries'),
     default: false,
   }),
   redis: Value.toggle({
-    name: 'Enable key-value store for tx caching',
+    name: i18n('Enable key-value store for tx caching'),
     description: null,
     default: true,
     immutable: false,
@@ -37,7 +39,7 @@ export const configure = sdk.Action.withInput(
   'configure',
   // metadata
   async ({ effects }) => ({
-    name: 'Configure',
+    name: i18n('Configure'),
     description: '',
     warning: null,
     allowedStatuses: 'any',

@@ -1,10 +1,11 @@
 import { sdk } from './sdk'
+import { i18n } from './i18n'
 import { btcPath, redisUrl, uiPort } from './utils'
 import { envFile } from './fileModels/_env'
 import { ExecCommandOptions } from '@start9labs/start-sdk/package/lib/mainFn/Daemons'
 
 export const main = sdk.setupMain(async ({ effects }) => {
-  console.info('Starting BTC RPC Explorer')
+  console.info(i18n('Starting Bitcoin Explorer'))
 
   const workdir = '/workspace'
 
@@ -38,9 +39,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
     } as ExecCommandOptions,
     cwd: workdir,
     ready: {
-      display: 'Web Interface',
+      display: i18n('Web Interface'),
       fn: () => sdk.healthCheck.checkPortListening(effects, uiPort, {
-        successMessage: 'The web interface is ready',
+        successMessage: i18n('The web interface is ready'),
         errorMessage: '',
       }),
     },
@@ -61,7 +62,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           display: null,
           fn: () =>
             sdk.healthCheck.checkPortListening(effects, 6379, {
-              successMessage: 'KV store is ready',
+              successMessage: i18n('KV store is ready'),
               errorMessage: ''
             }),
         },
