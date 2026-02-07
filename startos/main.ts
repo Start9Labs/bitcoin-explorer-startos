@@ -18,17 +18,17 @@ export const main = sdk.setupMain(async ({ effects }) => {
       .mountVolume({
         volumeId: 'main',
         mountpoint: '/root/.config/btc-rpc-explorer.env',
-        subpath: ".env",
+        subpath: '.env',
         type: 'file',
         readonly: false,
-      }).mountDependency({
-        dependencyId: "bitcoind",
-        volumeId: "main",
+      })
+      .mountDependency({
+        dependencyId: 'bitcoind',
+        volumeId: 'main',
         subpath: null,
         mountpoint: btcPath,
-        readonly: true
-      })
-    ,
+        readonly: true,
+      }),
     'explorer',
   )
 
@@ -40,18 +40,20 @@ export const main = sdk.setupMain(async ({ effects }) => {
     cwd: workdir,
     ready: {
       display: i18n('Web Interface'),
-      fn: () => sdk.healthCheck.checkPortListening(effects, uiPort, {
-        successMessage: i18n('The web interface is ready'),
-        errorMessage: '',
-      }),
+      fn: () =>
+        sdk.healthCheck.checkPortListening(effects, uiPort, {
+          successMessage: i18n('The web interface is ready'),
+          errorMessage: '',
+        }),
     },
   }
 
   if (env?.BTCEXP_REDIS_URL == redisUrl) {
-    const valkey = await sdk.SubContainer.of(effects,
-      { imageId: "valkey" },
+    const valkey = await sdk.SubContainer.of(
+      effects,
+      { imageId: 'valkey' },
       sdk.Mounts.of(),
-      "valkey",
+      'valkey',
     )
 
     return sdk.Daemons.of(effects)
@@ -60,23 +62,23 @@ export const main = sdk.setupMain(async ({ effects }) => {
         exec: { command: 'valkey-server' },
         ready: {
           display: null,
-          fn: () =>
-            sdk.healthCheck.checkPortListening(effects, 6379, {
-              successMessage: i18n('KV store is ready'),
-              errorMessage: ''
-            }),
+          fn: async () => {
+            const res = await valkey.exec(['valkey-cli', 'ping'])
+            return res.stdout.toString().trim() === 'PONG'
+              ? { message: '', result: 'success' }
+              : { message: res.stdout.toString().trim(), result: 'failure' }
+          },
         },
         requires: [],
-      }).addDaemon('primary', {
+      })
+      .addDaemon('primary', {
         ...primaryDaemonOptions,
         requires: ['valkey'],
       })
   } else {
-    return sdk.Daemons.of(effects).addDaemon(
-      'primary', {
+    return sdk.Daemons.of(effects).addDaemon('primary', {
       ...primaryDaemonOptions,
       requires: [],
     })
   }
-
 })
