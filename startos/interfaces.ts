@@ -1,6 +1,6 @@
 import { sdk } from './sdk'
 import { i18n } from './i18n'
-import { uiPort } from './utils'
+import { uiPort } from './fileModels/_env'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const uiMulti = sdk.MultiHost.of(effects, 'ui-multi')

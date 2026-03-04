@@ -1,16 +1,16 @@
 import { setupManifest } from '@start9labs/start-sdk'
-import { short, long } from './i18n'
+import { bitcoindDescription, long, short } from './i18n'
 
 export const manifest = setupManifest({
   id: 'bitcoin-explorer',
   title: 'Bitcoin Explorer',
   license: 'MIT',
-  wrapperRepo: 'https://github.com/aldum/btc-rpc-explorer-startos',
+  packageRepo:
+    'https://github.com/Start9Labs/bitcoin-explorer-startos/tree/update/040',
   upstreamRepo: 'https://github.com/janoside/btc-rpc-explorer',
-  supportSite: 'https://github.com/janoside/btc-rpc-explorer/issues',
-  marketingSite: 'https://bitcoinexplorer.org/',
+  marketingUrl: 'https://bitcoinexplorer.org/',
   donationUrl: 'https://donate.bitcoinexplorer.org',
-  docsUrl: 'https://github.com/janoside/btc-rpc-explorer',
+  docsUrls: ['https://github.com/janoside/btc-rpc-explorer'],
   description: { short, long },
   volumes: ['main'],
   images: {
@@ -29,8 +29,7 @@ export const manifest = setupManifest({
   },
   dependencies: {
     bitcoind: {
-      // @TODO conver to LocalString when supported by SDK
-      description: 'Communicate with the Bitcoin Network',
+      description: bitcoindDescription,
       optional: false,
       metadata: {
         title: 'Bitcoin',

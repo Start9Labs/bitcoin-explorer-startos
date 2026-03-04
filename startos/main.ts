@@ -1,6 +1,6 @@
 import { sdk } from './sdk'
 import { i18n } from './i18n'
-import { btcPath, redisUrl, uiPort } from './utils'
+import { btcPath, redisUrl, uiPort } from './fileModels/_env'
 import { envFile } from './fileModels/_env'
 import { ExecCommandOptions } from '@start9labs/start-sdk/package/lib/mainFn/Daemons'
 

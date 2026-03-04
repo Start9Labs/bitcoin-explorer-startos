@@ -1,8 +1,6 @@
-import { sdk } from '../sdk'
+import { envFile, redisUrl } from '../fileModels/_env'
 import { i18n } from '../i18n'
-import { store } from '../fileModels/store.json'
-import { envFile } from '../fileModels/_env'
-import { boolToString, redisUrl } from '../utils'
+import { sdk } from '../sdk'
 
 const { InputSpec, Value } = sdk
 
@@ -16,9 +14,7 @@ export const inputSpec = InputSpec.of({
   }),
   privacy: Value.toggle({
     name: i18n('Privacy mode'),
-    description: i18n(
-      'Disable: Exchange-rate queries, IP-geolocation queries',
-    ),
+    description: i18n('Disable: Exchange-rate queries, IP-geolocation queries'),
     default: false,
   }),
   rates: Value.toggle({
@@ -48,29 +44,24 @@ export const configure = sdk.Action.withInput(
   }),
   // form input specification
   inputSpec,
-  // optionally pre-fill the input form
-  async ({ effects }) => store.read().const(effects),
-  // the execution function
-  async ({ effects, input }) => {
-    let conf: Record<string, string | undefined> = {
-      BTCEXP_SLOW_DEVICE_MODE:
-        boolToString(!input.intensive),
-      BTCEXP_PRIVACY_MODE:
-        boolToString(input.privacy),
-      BTCEXP_NO_RATES:
-        boolToString(!input.rates),
-      BTCEXP_REDIS_URL:
-        input.redis ? redisUrl : ''
+  // pre-fill from .env
+  async ({ effects }) => {
+    const env = await envFile.read().const(effects)
+    if (!env) return null
+    return {
+      intensive: env.BTCEXP_SLOW_DEVICE_MODE === 'false',
+      privacy: env.BTCEXP_PRIVACY_MODE === 'true',
+      rates: env.BTCEXP_NO_RATES === 'false',
+      redis: env.BTCEXP_REDIS_URL === redisUrl,
     }
-
-    await Promise.all([
-      store.merge(effects, {
-        intensive: input.intensive,
-        privacy: input.privacy,
-        rates: input.rates,
-        redis: input.redis,
-      }),
-      envFile.merge(effects, conf)
-    ])
+  },
+  // write to .env
+  async ({ effects, input }) => {
+    await envFile.merge(effects, {
+      BTCEXP_SLOW_DEVICE_MODE: input.intensive ? 'false' : 'true',
+      BTCEXP_PRIVACY_MODE: input.privacy ? 'true' : 'false',
+      BTCEXP_NO_RATES: input.rates ? 'false' : 'true',
+      BTCEXP_REDIS_URL: input.redis ? redisUrl : undefined,
+    })
   },
 )

@@ -4,8 +4,8 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   return {
     bitcoind: {
       kind: "running",
-      versionRange: ">=28.1.0",
-      healthChecks: ["primary"],
+      versionRange: ">=28.3:0-beta.0",
+      healthChecks: ["bitcoind"],
     },
   }
 })

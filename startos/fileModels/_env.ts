@@ -1,60 +1,30 @@
-import { FileHelper, matches } from "@start9labs/start-sdk"
-import { defaultEnv, redisUrl } from "../utils"
-import { sdk } from "../sdk"
+import { FileHelper, z } from '@start9labs/start-sdk'
+import { sdk } from '../sdk'
 
-const { object, literal, oneOf } = matches
+const btcPath = '/btcd'
+const cookiePath = `${btcPath}/.cookie`
 
-const {
-  BTCEXP_BITCOIND_HOST,
-  BTCEXP_BITCOIND_PORT,
-  BTCEXP_BITCOIND_COOKIE,
-  BTCEXP_HOST,
-  BTCEXP_PORT,
-} = defaultEnv
+export { btcPath }
 
-const shape = object({
-  BTCEXP_BITCOIND_HOST:
-    literal(BTCEXP_BITCOIND_HOST)
-      .onMismatch(BTCEXP_BITCOIND_HOST),
-  BTCEXP_BITCOIND_PORT:
-    literal(BTCEXP_BITCOIND_PORT)
-      .onMismatch(BTCEXP_BITCOIND_PORT),
-  BTCEXP_BITCOIND_COOKIE:
-    literal(BTCEXP_BITCOIND_COOKIE)
-      .onMismatch(BTCEXP_BITCOIND_COOKIE),
-  BTCEXP_HOST:
-    literal(BTCEXP_HOST).onMismatch(BTCEXP_HOST),
-  BTCEXP_PORT:
-    literal(BTCEXP_PORT).onMismatch(BTCEXP_PORT),
+export const uiPort = 3002
+export const redisUrl = 'redis://localhost:6379'
 
-  // (default value is true, i.e.resource - intensive features are disabled)
-  BTCEXP_SLOW_DEVICE_MODE:
-    oneOf(literal('true'), literal('false'))
-      .onMismatch('true')
-      .optional(),
-  // Default: false
-  BTCEXP_PRIVACY_MODE:
-    oneOf(literal('true'), literal('false'))
-      .onMismatch('false')
-      .optional(),
-  // Default: true(i.e.no exchange - rate queries made)
-  BTCEXP_NO_RATES:
-    oneOf(literal('true'), literal('false'))
-      .onMismatch('true')
-      .optional(),
-
-  BTCEXP_REDIS_URL:
-    oneOf(literal(redisUrl), literal(''))
-      .optional()
-      .onMismatch(redisUrl)
-
-  // BTCEXP_BITCOIND_RPC_TIMEOUT=5000
+const shape = z.object({
+  BTCEXP_BITCOIND_HOST: z.literal('bitcoind.startos').catch('bitcoind.startos'),
+  BTCEXP_BITCOIND_PORT: z.literal('8332').catch('8332'),
+  BTCEXP_BITCOIND_COOKIE: z.literal(cookiePath).catch(cookiePath),
+  BTCEXP_HOST: z.literal('0.0.0.0').catch('0.0.0.0'),
+  BTCEXP_PORT: z.literal(`${uiPort}`).catch(`${uiPort}`),
+  BTCEXP_SLOW_DEVICE_MODE: z.enum(['true', 'false']).optional().catch('true'),
+  BTCEXP_PRIVACY_MODE: z.enum(['true', 'false']).optional().catch('false'),
+  BTCEXP_NO_RATES: z.enum(['true', 'false']).optional().catch('true'),
+  BTCEXP_REDIS_URL: z.literal(redisUrl).optional().catch(redisUrl),
 })
 
 export const envFile = FileHelper.env(
   {
     base: sdk.volumes.main,
-    subpath: ".env"
+    subpath: '.env',
   },
   shape,
 )
