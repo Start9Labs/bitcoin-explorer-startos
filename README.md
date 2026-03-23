@@ -7,7 +7,7 @@
 > **Upstream docs:** <https://github.com/janoside/btc-rpc-explorer>
 >
 > Everything not listed in this document should behave the same as upstream
-> BTC RPC Explorer v3.5.1. If a feature, setting, or behavior is not mentioned
+> BTC RPC Explorer. If a feature, setting, or behavior is not mentioned
 > here, the upstream documentation is accurate and fully applicable.
 
 [BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer) is a self-hosted Bitcoin blockchain explorer that connects directly to your Bitcoin Core node via RPC.
@@ -216,7 +216,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development wo
 
 ```yaml
 package_id: bitcoin-explorer
-upstream_version: 3.5.1
 image: dockerBuild (custom)
 additional_images:
   - valkey/valkey:alpine
